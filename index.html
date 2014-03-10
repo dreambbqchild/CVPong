@@ -67,6 +67,8 @@
 						calibrated = true;
 						window.localStorage["sliders"] = JSON.stringify(sliders);
 						button.parentNode.removeChild(button);
+						var a = document.querySelector("a");
+						a.parentElement.removeChild(a);;
 						document.querySelector(".ball").style.display = null;
 						ball.resetBall();
 					});
@@ -112,7 +114,7 @@
 			<video width="640" height="480" autoplay></video>
 			<div class="ball" style="display: none;"></div>
 		</div>
-		<button>Calibrated</button>
+		<button>Calibrated</button><a href="calibration.html">How To Calibrate</a>
 		<div>
 			<div class="ranges">H:<input type="range" max="360"/><input type="range"/></div>
 			<div class="ranges">S:<input type="range" max="255"/><input type="range"/></div>

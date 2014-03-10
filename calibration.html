@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Computer Vision Pong:Calibration</title>
+		<style type="text/css">	
+			/*html, body {margin: 0px; padding; 0px;}*/
+			#content {width: 980px}
+			#content video {float: left;}
+			#content>div {float:right; width:492px;} 
+			div.clear {clear: left;}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<video width="480" height="640" controls>
+				<source src="media/HowToCalibrate.mp4" type="video/mp4">
+				<source src="media/HowToCalibrate.ogg" type="video/ogg">
+				Your browser does not support the video tag.
+			</video>
+			<div>
+				<p>
+					You'll need two objects of the same color to use as paddles. In my first 
+					video I used my iPhone and iPod but here I'm just using a blue square I drew.
+				</p>
+				<p>
+					Note: The way I have this setup makes it more of an art than a science to select your
+					paddle. As you work it will help to remember the goal here is to make 
+					the pixels of your paddle in the lower preview screen be the the only 
+					white pixels present (though I do account for some noise in my code).
+				</p>
+				<p>
+					My basic process has been:
+				</p>
+				<ol>
+					<li>Select range of the Hue you want with the H slider.</li>
+					<li>Select range the Saturation, how rich is the color you're selecting, you want with the S slider.</li>
+					<li>Finally select the value of your color with the V slider. </li>
+				</ol>
+				<p>
+					When you hit the "Calibrated" button, your selections will be saved and reloaded when you rebrowse.
+				</p>
+				<a href="index.html">Back to Pong</a>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</body>
+</html>
