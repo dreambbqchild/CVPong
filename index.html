@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Computer Vision Pong</title>
+		<style type="text/css">
+			@font-face 
+			{
+				font-family: 'atari';
+				src: url('font/atarcc__-webfont.eot');
+				src: url('font/atarcc__-webfont.eot?#iefix') format('embedded-opentype'),
+					 url('font/atarcc__-webfont.woff') format('woff'),
+					 url('font/atarcc__-webfont.ttf') format('truetype'),
+					 url('font/atarcc__-webfont.svg#atari_classic_chunkyregular') format('svg');
+				font-weight: normal;
+				font-style: normal;
+			}
+			html, body {padding: 0px; margin: 0px; }
+			video {display: block; -webkit-transform: scaleX(-1); transform: scaleX(-1);}
+			.score-box {width: 640px; text-align: center; font-family: atari; font-size: 4em;}
+			.field {position: relative; width: 640px; height: 480px;}
+			.ball {width: 20px; height: 20px; border-radius: 10px; background-color: lime;}
+			.crosshair {color: red;}
+			.ball, .crosshair {position: absolute;}
+			.ranges {position: relative; display: inline-block; width: 200px; height: 32px;}
+			.ranges input{position: absolute; right: 0px; width: 180px;}
+			.ranges input + input{top:16px;}
+		</style>
+		<script type="text/javascript" src="scripts/webgl-utils.js"></script>
+		<script type="text/javascript" src="scripts/AJAX.js"></script>
+		<script type="text/javascript" src="scripts/CVPong.js"></script>
+		<script type="text/javascript" src="scripts/CVPong.WebGL.js"></script>
+		<script type="text/javascript" src="scripts/CVPong.Slider.js"></script>
+		<script type="text/javascript" src="scripts/CVPong.Ball.js"></script>
+		<script type="text/javascript">
+			navigator.getUserMedia = navigator.getUserMedia ||
+							  navigator.webkitGetUserMedia ||
+							  navigator.mozGetUserMedia ||
+							  navigator.msGetUserMedia;
+						
+			if(navigator.getUserMedia)
+			{	
+				window.addEventListener("DOMContentLoaded", function()
+				{
+					var calibrated = false;
+					var video = document.querySelector("video");
+					var ball = null;
+					var webgl = null;
+					var sliders = {}; 
+					Array.prototype.slice.call(document.querySelectorAll("div.ranges")).forEach(function(range)
+					{
+						sliders[range.textContent.substring(0, 1)] = new CVPong.Slider(range);
+					});
+									
+					if(window.localStorage["sliders"])
+					{
+						var stored = JSON.parse(window.localStorage["sliders"]);
+						sliders.H.Bounds = stored.H.Bounds;
+						sliders.S.Bounds = stored.S.Bounds;
+						sliders.V.Bounds = stored.V.Bounds;
+					}
+										
+					var button = document.querySelector("button");
+					button.addEventListener("click", function(e)
+					{
+						calibrated = true;
+						window.localStorage["sliders"] = JSON.stringify(sliders);
+						button.parentNode.removeChild(button);
+						document.querySelector(".ball").style.display = null;
+						ball.resetBall();
+					});
+					
+					function updateScore(pointFor)
+					{
+						var score = document.querySelector("#" + pointFor + "Player");
+						score.textContent = parseInt(score.textContent) + 1;
+						ball.resetBall();
+					}
+					
+					function render()
+					{
+						webgl.render();
+						if(calibrated)
+						{
+							ball.checkHit();
+							ball.move(updateScore)
+						}
+						window.requestAnimationFrame(render);
+					}
+					
+					navigator.getUserMedia({video: true}, function(stream) 
+					{
+    					video.src = window.URL.createObjectURL(stream);
+    					webgl = new CVPong.WebGL(video, sliders);
+    					ball = new CVPong.Ball(document.querySelector(".ball"), webgl);
+						
+						document.body.appendChild(webgl.Canvas);
+    					render();
+  					}, function() { document.body.textContent = "Unable to Access WebCam." });
+				});
+			}
+			else
+				document.body.textContent = "Sorry, this ain't gonna work with your browser.";
+		</script>
+	</head>
+	<body>
+		<div class="score-box">
+			<span id="leftPlayer">0</span>:<span id="rightPlayer">0</span>
+		</div>
+		<div class="field">
+			<video width="640" height="480" autoplay></video>
+			<div class="ball" style="display: none;"></div>
+		</div>
+		<button>Calibrated</button>
+		<div>
+			<div class="ranges">H:<input type="range" max="360"/><input type="range"/></div>
+			<div class="ranges">S:<input type="range" max="255"/><input type="range"/></div>
+			<div class="ranges">V:<input type="range" max="255"/><input type="range"/></div>
+		</div>
+	</body>
+</html>
