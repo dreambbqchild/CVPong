@@ -33,13 +33,8 @@
 		<script type="text/javascript" src="scripts/CVPong.WebGL.js"></script>
 		<script type="text/javascript" src="scripts/CVPong.Slider.js"></script>
 		<script type="text/javascript" src="scripts/CVPong.Ball.js"></script>
-		<script type="text/javascript">
-			navigator.getUserMedia = navigator.getUserMedia ||
-							  navigator.webkitGetUserMedia ||
-							  navigator.mozGetUserMedia ||
-							  navigator.msGetUserMedia;
-						
-			if(navigator.getUserMedia)
+		<script type="text/javascript">			
+			if(navigator.mediaDevices.getUserMedia)
 			{	
 				window.addEventListener("DOMContentLoaded", function()
 				{
@@ -90,10 +85,10 @@
 						}
 						window.requestAnimationFrame(render);
 					}
-					
-					navigator.getUserMedia({video: true}, function(stream) 
+				
+					navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) 
 					{
-    					video.src = window.URL.createObjectURL(stream);
+    					video.srcObject = stream;
     					webgl = new CVPong.WebGL(video, sliders);
     					ball = new CVPong.Ball(document.querySelector(".ball"), webgl);
 						
